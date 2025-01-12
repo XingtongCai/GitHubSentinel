@@ -1,11 +1,16 @@
 import os
-from openai import OpenAI  # 导入OpenAI库用于访问GPT模型
-from logger import LOG  # 导入日志模块
+from openai import OpenAI
+from logger import LOG
 
 class LLM:
-    def __init__(self):
+    def __init__(self,model,apiKey,apiUrl):
         # 创建一个OpenAI客户端实例
-        self.client = OpenAI()
+        self.client = OpenAI(
+            api_key=apiKey,  # 传入 API Key
+            base_url=apiUrl  # 传入 API URL
+        )
+        # 确定使用的模型版本
+        self.model = model
         # 配置日志文件，当文件大小达到1MB时自动轮转，日志级别为DEBUG
         LOG.add("daily_progress/llm_logs.log", rotation="1 MB", level="DEBUG")
 
@@ -25,11 +30,18 @@ class LLM:
         LOG.info("Starting report generation using GPT model.")
         
         try:
-            # 调用OpenAI GPT模型生成报告
+            # 调用deepseek模型生成报告
             response = self.client.chat.completions.create(
-                model="gpt-3.5-turbo",  # 指定使用的模型版本
+                model= self.model,
                 messages=[
-                    {"role": "user", "content": prompt}  # 提交用户角色的消息
+                    {
+                        "role": "system",
+                        "content": "你是一个专业的项目进展分析助手。请根据用户提供的内容，根据功能合并同类项，整理出一份简报，要求：1）新增功能；2）主要改进；3）修复问题。所有输出必须使用中文，且语言风格简洁明了。"
+                    },
+                    {
+                        "role": "user",
+                        "content": f"请整理以下项目进展内容：\n\n{markdown_content}"
+                    }
                 ]
             )
             LOG.debug("GPT response: {}", response)

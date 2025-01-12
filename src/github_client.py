@@ -20,6 +20,8 @@ class GitHubClient:
         return updates
 
     def fetch_commits(self, repo, since=None, until=None):
+        # https://docs.github.com/en/rest/commits/commits?apiVersion=2022-11-28#list-commits
+        # commits 里面有unitl属性
         url = f'https://api.github.com/repos/{repo}/commits'  # 构建获取提交的API URL
         params = {}
         if since:
@@ -33,6 +35,9 @@ class GitHubClient:
 
     def fetch_issues(self, repo, since=None, until=None):
         url = f'https://api.github.com/repos/{repo}/issues'  # 构建获取问题的API URL
+        # todo: 
+        # 1.结合 since 参数，获取在某个时间点之后创建的问题。在客户端代码中根据 created_at 或 updated_at 字段进行过滤
+        # 2.GitHub 的 GraphQL API 提供了更灵活的查询方式，可以通过自定义查询实现时间范围过滤。
         params = {
             'state': 'closed',  # 仅获取已关闭的问题
             'since': since,
@@ -44,6 +49,9 @@ class GitHubClient:
 
     def fetch_pull_requests(self, repo, since=None, until=None):
         url = f'https://api.github.com/repos/{repo}/pulls'  # 构建获取拉取请求的API URL
+         # todo: 
+        # 1.结合 since 参数，获取在某个时间点之后创建的问题。在客户端代码中根据 created_at 或 updated_at 字段进行过滤
+        # 2.GitHub 的 GraphQL API 提供了更灵活的查询方式，可以通过自定义查询实现时间范围过滤。
         params = {
             'state': 'closed',  # 仅获取已合并的拉取请求
             'since': since,

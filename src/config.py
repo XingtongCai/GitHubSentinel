@@ -11,3 +11,6 @@ class Config:
             self.notification_settings = config.get('notification_settings')
             self.subscriptions_file = config.get('subscriptions_file')
             self.update_interval = config.get('update_interval', 24 * 60 * 60)  # Default to 24 hours
+            self.openai_model = config.get('openai_model')
+            self.openai_api_key = config.get('openai_api_key')
+            self.openai_base_url = config.get('openai_base_url')
